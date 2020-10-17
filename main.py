@@ -19,6 +19,7 @@ class Field:
         for i in range():
 
 
-
+    def adzf:
+        zdfhzgnc
 
 
