@@ -1,6 +1,7 @@
 import random
+import time
 from pprint import pprint as pp
-
+import pygame
 
 class Cell:
     next_alive = None
@@ -15,7 +16,6 @@ class Cell:
             return "*"
         else:
             return " "
-
 
     def calculate_state(self, neighbours):
         alive_neighbours = 0
@@ -36,21 +36,19 @@ class Cell:
     def next_step(self):
         self.alive = self.next_alive
 
+
 class Field:
     fill_percent = 25
     cells = []
 
-    def __init__(self, width=100, height=100, cell_size=5, speed=4, randomize=False):
+    def __init__(self, width=10, height=10, randomize=False):
         self.width = width
         self.height = height
-        self.cell_size = cell_size
-        self.screen_size = width * height
-        self.cell_width = self.width // self.cell_size
-        self.cell_height = self.height // self.cell_size
-        self.speed = speed
+        screen = pygame.display.set_mode(100)
+
+
         if randomize:
             self.randomize_field()
-
 
     def randomize_field(self):
         for i in range(self.height):
@@ -62,6 +60,26 @@ class Field:
                 self.cells[i].append(Cell(j, i, alive))
 
     def field_update(self):
-        pass
+        for i in range(self.height):
+            for j in range(self.width):
+                neighbours = [self.cells[(i - 1) % self.height][(j) % self.width],
+                              self.cells[(i + 1) % self.height][(j) % self.width],
+                              self.cells[(i) % self.height][(j - 1) % self.width],
+                              self.cells[(i) % self.height][(j + 1) % self.width],
+                              self.cells[(i - 1) % self.height][(j - 1) % self.width],
+                              self.cells[(i + 1) % self.height][(j + 1) % self.width],
+                              self.cells[(i - 1) % self.height][(j + 1) % self.width],
+                              self.cells[(i + 1) % self.height][(j - 1) % self.width]]
+                self.cells[i][j].calculate_state(neighbours)
+        for i in range(self.height):
+            for j in range(self.width):
+                self.cells[i][j].next_step()
+
+
 if __name__ == '__main__':
-    pp(Field(10, 10, randomize=True).cells)
+    field = Field(10, 10, randomize=True)
+    while True:
+        pp(field.cells)
+        field.field_update()
+        time.sleep(1)
+
