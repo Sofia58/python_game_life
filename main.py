@@ -3,6 +3,7 @@ import time
 from pprint import pprint as pp
 import pygame
 
+
 class Cell:
     next_alive = None
 
@@ -44,8 +45,6 @@ class Field:
     def __init__(self, width=10, height=10, randomize=False):
         self.width = width
         self.height = height
-        screen = pygame.display.set_mode(100)
-
 
         if randomize:
             self.randomize_field()
@@ -82,4 +81,3 @@ if __name__ == '__main__':
         pp(field.cells)
         field.field_update()
         time.sleep(1)
-
