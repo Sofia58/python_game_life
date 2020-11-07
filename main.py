@@ -39,12 +39,12 @@ class Cell:
 
 
 class Field:
-    fill_percent = 25
-    cells = []
 
-    def __init__(self, width=10, height=10, randomize=False):
+    def __init__(self, width=10, height=10, fill_percent=10, randomize=False):
         self.width = width
         self.height = height
+        self.fill_percent = fill_percent
+        self.cells = []
 
         if randomize:
             self.randomize_field()
