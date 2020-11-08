@@ -49,6 +49,17 @@ class Field:
         if randomize:
             self.randomize_field()
 
+    def previous_step(self):
+        res = []
+        for i in range(self.height):
+            for j in range(self.width):
+
+                while i and j > 0:
+                    o = n % 2
+                    res.append(o == 1)
+                    n = n // 2
+                return res
+
     def randomize_field(self):
         for i in range(self.height):
             self.cells.append([])
@@ -58,7 +69,7 @@ class Field:
                     alive = True
                 self.cells[i].append(Cell(j, i, alive))
 
-    def field_update(self):
+    def field_update(self, field):
         for i in range(self.height):
             for j in range(self.width):
                 neighbours = [self.cells[(i - 1) % self.height][(j) % self.width],
@@ -75,9 +86,18 @@ class Field:
                 self.cells[i][j].next_step()
 
 
+def bin_2(n):
+    res = []
+    while n > 0:
+        o = n % 2
+        res.append(o == 1)
+        n = n // 2
+    return res
+
 if __name__ == '__main__':
-    field = Field(10, 10, randomize=True)
-    while True:
-        pp(field.cells)
-        field.field_update()
-        time.sleep(1)
+    # field = Field(10, 10, randomize=True)
+    # while True:
+    #     pp(field.cells)
+    #     field.field_update()
+    #     time.sleep(1)
+    print(bin_2(6))
