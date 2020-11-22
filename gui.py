@@ -33,6 +33,6 @@ if __name__ == '__main__':
               screen_height=500)
 
     while True:
-        gui.field.field_update()
+        gui.field.next()
         gui.draw()
         gui.wait()

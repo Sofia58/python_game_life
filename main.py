@@ -49,16 +49,17 @@ class Field:
         if randomize:
             self.randomize_field()
 
-    def previous_step(self):
+    def previous_step(self, j):
         res = []
-        for i in range(self.height):
-            for j in range(self.width):
-
-                while i and j > 0:
-                    o = n % 2
-                    res.append(o == 1)
-                    n = n // 2
-                return res
+        zero =[]
+        for j in range(self.width):
+            bin_2(j)
+        return j
+        #while True:
+            #zero.append(0)
+            #if len(res) < 5:
+             #   zero.extend(res)
+        #return j
 
     def randomize_field(self):
         for i in range(self.height):
@@ -69,21 +70,25 @@ class Field:
                     alive = True
                 self.cells[i].append(Cell(j, i, alive))
 
+
     def field_update(self, field):
         for i in range(self.height):
             for j in range(self.width):
-                neighbours = [self.cells[(i - 1) % self.height][(j) % self.width],
-                              self.cells[(i + 1) % self.height][(j) % self.width],
-                              self.cells[(i) % self.height][(j - 1) % self.width],
-                              self.cells[(i) % self.height][(j + 1) % self.width],
-                              self.cells[(i - 1) % self.height][(j - 1) % self.width],
-                              self.cells[(i + 1) % self.height][(j + 1) % self.width],
-                              self.cells[(i - 1) % self.height][(j + 1) % self.width],
-                              self.cells[(i + 1) % self.height][(j - 1) % self.width]]
-                self.cells[i][j].calculate_state(neighbours)
+                neighbours = [field[(i - 1) % self.height][(j) % self.width],
+                              field[(i + 1) % self.height][(j) % self.width],
+                              field[(i) % self.height][(j - 1) % self.width],
+                              field[(i) % self.height][(j + 1) % self.width],
+                              field[(i - 1) % self.height][(j - 1) % self.width],
+                              field[(i + 1) % self.height][(j + 1) % self.width],
+                              field[(i - 1) % self.height][(j + 1) % self.width],
+                              field[(i + 1) % self.height][(j - 1) % self.width]]
+                field[i][j].calculate_state(neighbours)
         for i in range(self.height):
             for j in range(self.width):
-                self.cells[i][j].next_step()
+                field[i][j].next_step()
+
+    def next(self):
+        return self.field_update(self.cells)
 
 
 def bin_2(n):
@@ -94,10 +99,11 @@ def bin_2(n):
         n = n // 2
     return res
 
+
 if __name__ == '__main__':
-    # field = Field(10, 10, randomize=True)
-    # while True:
-    #     pp(field.cells)
-    #     field.field_update()
+    field = Field(5, 5, randomize=True)
+    while True:
+       step = field.previous_step(6)
+       pp(step)
+       #field.field_update(step)
     #     time.sleep(1)
-    print(bin_2(6))
