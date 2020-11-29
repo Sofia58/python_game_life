@@ -40,36 +40,57 @@ class Cell:
 
 class Field:
 
-    def __init__(self, width=10, height=10, fill_percent=10, randomize=False):
+    def __init__(self, width=10, height=10, fill_percent=10, randomize=False, cells=None):
         self.width = width
         self.height = height
         self.fill_percent = fill_percent
         self.cells = []
 
         if randomize:
-            self.randomize_field()
+            self.cells = self.prefill_field(self.random_aliveness())
+        elif cells:
+            self.cells = self.prefill_field(cells)
+        else:
+            self.cells = self.prefill_field([False for _ in range(self.width * self.height)])
 
     def previous_step(self, j):
         res = []
-        zero =[]
-        for j in range(self.width):
-            bin_2(j)
-        return j
-        #while True:
-            #zero.append(0)
-            #if len(res) < 5:
-             #   zero.extend(res)
-        #return j
+        for n in pow(2, self.width * self.height):
+            fld = self.prefill_field(self._add_zeros(bin_2(j)))
+            self.field_update(fld)
+            if fld == self.cells:
+                res.append(n)
+        return res
 
-    def randomize_field(self):
+    def _add_zeros(self, lst):
+        zeros = []
+        for i in range(self.height * self.width - len(lst)):
+            zeros.append(False)
+        zeros.extend(lst)
+        return zeros
+
+    def prefill_field(self, aliveness):
+        fld = []
         for i in range(self.height):
-            self.cells.append([])
+            fld.append([])
             for j in range(self.width):
-                alive = False
-                if random.randrange(0, 100) < self.fill_percent:
-                    alive = True
-                self.cells[i].append(Cell(j, i, alive))
+                fld[i].append(Cell(j, i, aliveness[i * self.width + j]))
+        return fld
 
+    def random_aliveness(self):
+        aliveness = []
+        for i in range(self.height * self.width):
+            if random.randrange(0, 100) < self.fill_percent:
+                aliveness.append(True)
+            else:
+                aliveness.append(False)
+        return aliveness
+
+    def make_step(self):
+        for i in range(self.height):
+            for j in range(self.width):
+                pass
+                # .next_step()
 
     def field_update(self, field):
         for i in range(self.height):
@@ -103,7 +124,8 @@ def bin_2(n):
 if __name__ == '__main__':
     field = Field(5, 5, randomize=True)
     while True:
-       step = field.previous_step(6)
+       step = field.previous_step(8)
        pp(step)
+       exit(0)
        #field.field_update(step)
-    #     time.sleep(1)
+       #time.sleep(1)
