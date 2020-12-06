@@ -1,8 +1,7 @@
 import random
 import time
 from pprint import pprint as pp
-import pygame
-
+import numpy as np
 
 class Cell:
     next_alive = None
@@ -17,6 +16,9 @@ class Cell:
             return "*"
         else:
             return " "
+
+    def __eq__(self, other):
+        return isinstance(other, Cell) and self.alive == other.alive
 
     def calculate_state(self, neighbours):
         alive_neighbours = 0
@@ -53,13 +55,23 @@ class Field:
         else:
             self.cells = self.prefill_field([False for _ in range(self.width * self.height)])
 
-    def previous_step(self, j):
+    def decode(self, n):
+        return self._add_zeros(bin_2(n))
+
+    def previous_step(self):
         res = []
-        for n in pow(2, self.width * self.height):
-            fld = self.prefill_field(self._add_zeros(bin_2(j)))
+        for n in range(pow(2, self.width * self.height)):
+            if n % 10000 == 0:
+                print(n)
+            decoded = self.decode(n)
+            if decoded[9:12] == [True, True, True] and decoded[:8] == [False] * 8:
+                pp(decoded)
+            fld = self.prefill_field(decoded)
             self.field_update(fld)
             if fld == self.cells:
                 res.append(n)
+                # if len(res) == 2:
+                #     return res
         return res
 
     def _add_zeros(self, lst):
@@ -85,12 +97,6 @@ class Field:
             else:
                 aliveness.append(False)
         return aliveness
-
-    def make_step(self):
-        for i in range(self.height):
-            for j in range(self.width):
-                pass
-                # .next_step()
 
     def field_update(self, field):
         for i in range(self.height):
@@ -122,10 +128,39 @@ def bin_2(n):
 
 
 if __name__ == '__main__':
-    field = Field(5, 5, randomize=True)
+    # cells = [False, False, False, False, False,
+    #          False, False, True,  False, False,
+    #          False, True,  True,  True, False,
+    #          False, False, True,  False, False,
+    #          False, False, False, False, False]
+    cells = [
+        False, False, False, False,
+        False, False, True, False,
+        False, False, True, False,
+        False, False, True, False,
+    ]
+
+    # cells = [
+    #   True,  True,  True, False,
+    #   True,  True,  True, False,
+    #   True, False, False, False,
+    #   True, False, False,  True,
+    # ]
+
+    field = Field(4, 4, cells=cells)
     while True:
-       step = field.previous_step(8)
-       pp(step)
-       exit(0)
-       #field.field_update(step)
-       #time.sleep(1)
+        command = input('n or p')
+        if command == 'p':
+            steps = field.previous_step()
+            pp(steps)
+            for n in steps:
+                res = np.array(field.decode(n))
+                res = res.reshape(4,4)
+                print(res)
+            exit(0)
+        elif command == 'n':
+            field.next()
+            for lst in field.cells:
+                pp(lst)
+        # field.field_update(step)
+        # time.sleep(1)
