@@ -29,8 +29,8 @@ class GUI():
 
 
 if __name__ == '__main__':
-    gui = GUI(main.Field(width=100, height=100, fill_percent=15, randomize=True), wait_ms=200, screen_width=500,
-              screen_height=500)
+    gui = GUI(main.Field(width=110, height=110, fill_percent=15, randomize=True), wait_ms=200, screen_width=650,
+              screen_height=650)
 
     while True:
         gui.field.next()
