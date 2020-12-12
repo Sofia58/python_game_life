@@ -2,6 +2,7 @@ import random
 import time
 from pprint import pprint as pp
 import numpy as np
+import os
 
 class Cell:
     next_alive = None
@@ -64,8 +65,8 @@ class Field:
             if n % 10000 == 0:
                 print(n)
             decoded = self.decode(n)
-            if decoded[9:12] == [True, True, True] and decoded[:8] == [False] * 8:
-                pp(decoded)
+            #if decoded[9:12] == [True, True, True] and decoded[:8] == [False] * 8:
+                #pp(decoded)
             fld = self.prefill_field(decoded)
             self.field_update(fld)
             if fld == self.cells:
@@ -124,7 +125,7 @@ def bin_2(n):
         o = n % 2
         res.append(o == 1)
         n = n // 2
-    return res
+    return list(reversed(res))
 
 
 if __name__ == '__main__':
@@ -148,15 +149,21 @@ if __name__ == '__main__':
     # ]
 
     field = Field(4, 4, cells=cells)
+    for lst in field.cells:
+        pp(lst)
     while True:
         command = input('n or p')
+        print(command)
         if command == 'p':
             steps = field.previous_step()
-            pp(steps)
+            print(steps)
+            #pp(steps)
             for n in steps:
                 res = np.array(field.decode(n))
-                res = res.reshape(4,4)
+                res = res.reshape(4, 4)
                 print(res)
+                print(os.linesep)
+                print('-------------------------------------')
             exit(0)
         elif command == 'n':
             field.next()
