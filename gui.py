@@ -27,15 +27,30 @@ class GUI():
     def wait(self):
         self.clock.tick(int(1000 / self.wait_ms))
 
+    def process_event(self, event):
+        if event.type == pygame.MOUSEBUTTONUP:
+            x, y = event.pos
+            x_cell = x // self.cell_size_x
+            y_cell = y // self.cell_size_y
+            self.field.touch_cell(x_cell, y_cell)
+
+    stop = True
+
+    def play(self):
+        pixel_width = self.size[0] // self.field.width
+        pixel_height = self.size[1] // self.field.height
+        while True:
+            for e in pygame.event.get():
+                self.process_event(e)
+            if not self.stop:
+                self.field.next()
+            self.draw()
+            self.wait()
+
+
 
 if __name__ == '__main__':
-    gui = GUI(main.Field(width=10, height=10, fill_percent=15, randomize=True), wait_ms=200, screen_width=650,
-              screen_height=650)
+    gui = GUI(main.Field(width=100, height=100, fill_percent=15, randomize=True), wait_ms=200, screen_width=500,
+              screen_height=500)
 
-    while True:
-        # if play
-        gui.field.next()
-        gui.draw()
-        # обработка событий
-        # ...
-        gui.wait()
+    gui.play()

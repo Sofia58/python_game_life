@@ -6,6 +6,7 @@ import os
 
 class Cell:
     next_alive = None
+    alive = None
 
     def __init__(self, x, y, alive):
         self.x = x
@@ -55,6 +56,9 @@ class Field:
             self.cells = self.prefill_field(cells)
         else:
             self.cells = self.prefill_field([False for _ in range(self.width * self.height)])
+
+    def touch_cell(self, x, y):
+        self.cells[y][x].alive ^= True
 
     def decode(self, n):
         return self._add_zeros(bin_2(n))
